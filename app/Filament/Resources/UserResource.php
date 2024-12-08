@@ -15,6 +15,8 @@ use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Gate;
 use function Laravel\Prompts\select;
 
 class UserResource extends Resource
@@ -28,6 +30,12 @@ class UserResource extends Resource
     protected static ?string $label = 'Usuário';
     protected static ?string $navigationLabel = 'Usuários';
     protected static ?string $pluralLabel = 'Usuários';
+
+    public static function canViewAny(): bool
+    {
+        $slug = self::$slug;
+       return Gate::allows("filament.admin.resources.{$slug}.index");
+    }
 
     public static function form(Form $form): Form
     {
@@ -88,6 +96,7 @@ class UserResource extends Resource
             'index' => Pages\ListUsers::route('/'),
             'create' => Pages\CreateUser::route('/create'),
             'edit' => Pages\EditUser::route('/{record}/edit'),
+            'delete' => Pages\DeleteUser::route('/{record}/delete'),
         ];
     }
 }

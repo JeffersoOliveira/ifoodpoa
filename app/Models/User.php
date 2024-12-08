@@ -48,4 +48,21 @@ class User extends Authenticatable
             'role_id',
         ]);
     }
+
+    /*
+     * ACL
+     */
+    public function hasAnyRoles($roles) : bool
+    {
+        if (is_object($roles)){
+            return !!$roles->intersect($this->roles)->count();
+        }
+        return $this->roles->contains('name', $roles);
+    }
+
+    public function hasPermission(Permission $permission) : bool
+    {
+        return $this->hasAnyRoles($permission->roles);
+    }
+
 }
