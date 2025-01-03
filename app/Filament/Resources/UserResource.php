@@ -3,8 +3,8 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\UserResource\Pages;
-//use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\User;
+use App\Services\Traits\CanPermissionTrait;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
@@ -15,12 +15,12 @@ use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Gate;
-use function Laravel\Prompts\select;
+use Illuminate\Support\Facades\Hash;
 
 class UserResource extends Resource
 {
+    use CanPermissionTrait;
+
     protected static ?string $model = User::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
@@ -31,11 +31,7 @@ class UserResource extends Resource
     protected static ?string $navigationLabel = 'Usuários';
     protected static ?string $pluralLabel = 'Usuários';
 
-    public static function canViewAny(): bool
-    {
-        $slug = self::$slug;
-       return Gate::allows("filament.admin.resources.{$slug}.index");
-    }
+
 
     public static function form(Form $form): Form
     {
@@ -50,7 +46,10 @@ class UserResource extends Resource
                     ->maxLength(255),
                 TextInput::make('password')
                     ->password()
-                    ->required()
+                    ->revealable()
+                    ->dehydrateStateUsing(fn (string $state): string => Hash::make($state))
+                    ->dehydrated(fn (?string $state): bool => filled($state))
+                    ->required(fn(string $operation): bool => $operation ==='create')
                     ->maxLength(255),
                 Select::make('roles')
                     ->multiple()

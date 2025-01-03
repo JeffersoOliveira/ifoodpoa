@@ -2,14 +2,19 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\BikeStatusEnum;
+use App\Enums\MaintenanceStatusEnum;
 use App\Filament\Resources\BikeResource\Pages;
 use App\Filament\Resources\BikeResource\RelationManagers;
 use App\Models\Bike;
 use App\Services\Traits\CanPermissionTrait;
 use Filament\Forms;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -26,15 +31,16 @@ class BikeResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('patrimony')
+                TextInput::make('patrimony')
                     ->label('Patrimônio')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('status')
+                Select::make('status')
                     ->label('Status')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('series')
+                    ->options(BikeStatusEnum::class)
+                    ->native(false)
+                    ->required(),
+                TextInput::make('series')
                     ->label('Nº de Série')
                     ->required()
                     ->maxLength(255),
@@ -49,20 +55,15 @@ class BikeResource extends Resource
                     ->label('Patrimônio')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('status')
+                    ->sortable()
+                    ->badge()
                     ->label('Status')
                     ->copyable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('series')
                     ->label('Nº de Série')
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->searchable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 //

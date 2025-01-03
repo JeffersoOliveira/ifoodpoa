@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Filament\Resources\BikeResource\Pages;
+namespace App\Filament\Resources\MaintenanceResource\Pages;
 
-use App\Enums\BikeStatusEnum;
-use App\Filament\Resources\BikeResource;
+use App\Enums\MaintenanceStatusEnum;
+use App\Filament\Resources\MaintenanceResource;
 use Filament\Actions;
+use Filament\Resources\Components\Tab;
 use Filament\Resources\Pages\ListRecords;
-use Filament\Resources\Pages\ListRecords\Tab;
 use Illuminate\Database\Eloquent\Builder;
 
-class ListBikes extends ListRecords
+class ListMaintenances extends ListRecords
 {
-    protected static string $resource = BikeResource::class;
+    protected static string $resource = MaintenanceResource::class;
 
     protected function getHeaderActions(): array
     {
@@ -27,7 +27,7 @@ class ListBikes extends ListRecords
                 ->label('Todos')
         ];
 
-        foreach (BikeStatusEnum::cases() as $status) {
+        foreach (MaintenanceStatusEnum::cases() as $status) {
             $tabs[$status->value] = Tab::make()
                 ->label($status->getLabel())
                 ->modifyQueryUsing(function (Builder $query) use ($status) {
@@ -38,5 +38,4 @@ class ListBikes extends ListRecords
 
         return $tabs;
     }
-
 }

@@ -9,4 +9,5 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateBike extends CreateRecord
 {
     protected static string $resource = BikeResource::class;
+    protected static bool $canCreateAnother = false;
 }

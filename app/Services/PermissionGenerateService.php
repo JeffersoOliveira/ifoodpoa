@@ -86,6 +86,10 @@ class PermissionGenerateService
             return "Permissões";
         }
 
+        if (str_contains($separate[3], "maintenances")){
+            return "Manutenções";
+        }
+
         return ucfirst($separate[3]);
     }
 
