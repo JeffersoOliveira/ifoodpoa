@@ -25,7 +25,7 @@ class RoleResource extends Resource
 
     protected static ?string $model = Role::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-swatch';
 
     protected static ?string $navigationGroup = 'Configuraçoes';
     protected static ?string $slug = 'roles';

@@ -1,15 +1,10 @@
 <?php
 
-namespace App\Filament\Resources;
+namespace App\Filament\Resources\BikeResource\RelationManagers;
 
 use App\Enums\BikeStatusEnum;
-use App\Enums\MaintenanceStatusEnum;
-use App\Filament\Resources\MaintenanceResource\Pages;
 use App\Models\Bike;
-use App\Models\Maintenance;
-use App\Services\Traits\CanPermissionTrait;
 use Arr;
-use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Select;
@@ -20,31 +15,19 @@ use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Wizard;
 use Filament\Forms\Components\Wizard\Step;
 use Filament\Forms\Form;
-use Filament\Resources\Resource;
+use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Actions\Action;
-use Filament\Tables\Actions\BulkActionGroup;
-use Filament\Tables\Actions\DeleteBulkAction;
-use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class MaintenanceResource extends Resource
+class MaintenancesRelationManager extends RelationManager
 {
-    use CanPermissionTrait;
+    protected static string $relationship = 'maintenances';
 
-    protected static ?string $model = Maintenance::class;
-
-    protected static ?string $navigationIcon = 'heroicon-o-wrench-screwdriver';
-    // protected static ?string $navigationGroup = 'Configuraçoes';
-    protected static ?string $slug = 'maintenance';
-    protected static ?string $label = 'Manutenção';
-    protected static ?string $navigationLabel = 'Manutenções';
-    protected static ?string $pluralLabel = 'Manutenções';
-
-    public static function form(Form $form): Form
+    public function form(Form $form): Form
     {
         return $form
             ->schema([
@@ -69,13 +52,13 @@ class MaintenanceResource extends Resource
                                 /*->afterStateUpdated(function ($state, callable $set, $livewire) {
                                     $currentDate = Carbon::now();
                                     $selectedDate = Carbon::parse($state);
-//                                    dd($selectedDate,$currentDate,  $state, $livewire);
-//                                  // Verifica se a data selecionada é maior que uma semana a partir de agora
+    //                                    dd($selectedDate,$currentDate,  $state, $livewire);
+    //                                  // Verifica se a data selecionada é maior que uma semana a partir de agora
                                     if ($selectedDate->isAfter($currentDate->addWeek())) {
                                         $set('maintenance_date', null);
                                     }
 
-//                                    dd($selectedDate->format('Y-m-d'),$currentDate->format('Y-m-d'));
+    //                                    dd($selectedDate->format('Y-m-d'),$currentDate->format('Y-m-d'));
                                     if ($selectedDate->addMinute(1410)->isBefore(Carbon::now())) {
                                         $set('maintenance_date', null);
                                     }
@@ -170,60 +153,39 @@ class MaintenanceResource extends Resource
             ->columns(1);
     }
 
-    public static function table(Table $table): Table
+    public function table(Table $table): Table
     {
         return $table
-            ->defaultSort('maintenance_date', 'desc')
+            ->recordTitleAttribute('descriptionS')
             ->columns([
+                TextColumn::make('id')
+                    ->numeric()
+                    ->sortable(),
                 TextColumn::make('bike.patrimony')
                     ->numeric()
-                    ->searchable(),
+                    ->sortable(),
                 TextColumn::make('attendant.name')
-                    ->label('Atendente')
-                    ->numeric(),
+                    ->numeric()
+                    ->sortable(),
                 TextColumn::make('maintenance_date')
-                    ->label('Dia')
                     ->date('d/m/Y')
                     ->sortable(),
                 TextColumn::make('maintenance_time')
-                    ->label('Hora')
                     ->time('H:i'),
                 TextColumn::make('status')
                     ->badge(),
             ])
             ->filters([
-                Tables\Filters\Filter::make('maintenance_date')
-                    ->label('Data')
-                    ->form([
-                        Forms\Components\DatePicker::make('maintenance_date')
-                            ->date()
-                            // ->default(today())
-                            ->label('Data'),
-                    ])
-                    ->query(
-                        fn($query, $data) =>
-                        $query->when(
-                            $data['maintenance_date'] ?? null,
-                            fn($q) =>
-                            $q->where('maintenance_date', $data['maintenance_date'])
-                        )
-                    ),
-
                 //
             ])
+            ->headerActions([
+                // Tables\Actions\CreateAction::make(),
+            ])
             ->actions([
-
-                EditAction::make()
-                    ->visible(function ($record) {
-                        return (!auth()->user()->hasAnyRoles('Mechanic') &&
-                            !$record->repair()->exists());
-                    }),
-
-
                 Action::make('view')
                     ->url(fn($record) => route('filament.admin.resources.maintenance.view', ['maintenance' => $record]))
                     ->icon('heroicon-o-eye')
-                    ->color('info')
+                    ->color('gray')
                     ->visible(function ($record) {
 
                         // if ($record->repair?->mechanic_id === auth()->id() and $record->status != MaintenanceStatusEnum::COMPLETED) {
@@ -232,46 +194,16 @@ class MaintenanceResource extends Resource
 
                         return $record->repair()->exists();
                     }),
-
-                Action::make('Manutençao')
-                    ->url(fn($record) => route('filament.admin.resources.maintenance.repairrecords', ['maintenanceId' => $record->id]))
-                    ->openUrlInNewTab() // (Opcional) Abre em uma nova aba
-                    ->icon('heroicon-o-arrow-right') // Define o ícone do botão
-                    ->color('primary')
-                    ->visible(function ($record) {
-
-                        if (auth()->user()->hasAnyRoles('Mechanic') and $record->status !== MaintenanceStatusEnum::COMPLETED) {
-                            return true;
-                        }
-
-                        return false;
-                    }),
+                // Tables\Actions\ViewAction::make(),
+                Tables\Actions\EditAction::make()->visible(function ($record) {
+                    return !$record->repair()->exists();
+                }),
+                // Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                Tables\Actions\BulkActionGroup::make([
+                    // Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
     }
-
-
-
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
-    }
-
-    public static function getPages(): array
-    {
-        return [
-            'index' => Pages\ListMaintenances::route('/'),
-            'create' => Pages\CreateMaintenance::route('/create'),
-            'edit' => Pages\EditMaintenance::route('/{record}/edit'),
-            'view' => Pages\ViewMaintenance::route('/{maintenance}'),
-            'repairrecords' => Pages\RepairRecords::route('/{maintenanceId}/repairrecords'),
-        ];
-    }
-
 }

@@ -16,12 +16,4 @@ class ViewMaintenance extends Page
 
 
     public Maintenance $maintenance;
-
-
-    // protected function getHeaderActions(): array
-    // {
-    //     return [
-    //         Actions\EditAction::make(),
-    //     ];
-    // }
 }

@@ -23,7 +23,7 @@ class UserResource extends Resource
 
     protected static ?string $model = User::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-users';
 
     protected static ?string $navigationGroup = 'Configuraçoes';
     protected static ?string $slug = 'users';
@@ -47,9 +47,9 @@ class UserResource extends Resource
                 TextInput::make('password')
                     ->password()
                     ->revealable()
-                    ->dehydrateStateUsing(fn (string $state): string => Hash::make($state))
-                    ->dehydrated(fn (?string $state): bool => filled($state))
-                    ->required(fn(string $operation): bool => $operation ==='create')
+                    ->dehydrateStateUsing(fn(string $state): string => Hash::make($state))
+                    ->dehydrated(fn(?string $state): bool => filled($state))
+                    ->required(fn(string $operation): bool => $operation === 'create')
                     ->maxLength(255),
                 Select::make('roles')
                     ->multiple()
@@ -66,7 +66,9 @@ class UserResource extends Resource
                 TextColumn::make('name')
                     ->searchable(),
                 TextColumn::make('email')
-                    ->searchable(),
+                    ->searchable()
+                    ->copyable()
+                    ->copyMessage('Email copiado'),
             ])
             ->filters([
                 //
@@ -82,7 +84,7 @@ class UserResource extends Resource
             ]);
     }
 
-//    public static function getRelations(): array
+    //    public static function getRelations(): array
 //    {
 //        return [
 //            //

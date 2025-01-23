@@ -81,7 +81,7 @@
         <!-- Histórico de Reparos -->
         <div class="bg-white p-4 rounded-lg shadow mt-6">
             <h2 class="text-lg font-semibold text-gray-700 mb-2">Histórico de Reparos</h2>
-            @if ($maintenance->repair->exists())
+            @if ($maintenance->repair['repaired'])
                 <table class="table-auto w-full text-left border-collapse">
                     <thead>
                         <tr class="bg-gray-200 text-gray-900">
@@ -92,6 +92,7 @@
                         </tr>
                     </thead>
                     <tbody>
+                        {{-- @dump($maintenance->repair['repaired']); --}}
                         @foreach ($maintenance->repair['repaired'] as $key => $values)
                             {{-- @dump($key, $values); --}}
 
@@ -113,7 +114,10 @@
                                 </tr>
                             @endif
                         @endforeach
+
                     </tbody>
+
+
                 </table>
             @else
                 <p class="text-gray-600">Nenhum reparo registrado.</p>
@@ -130,6 +134,6 @@
 
 
 
-    {{-- @dump($maintenance->repair['repaired'], $maintenance, $maintenance->bike, $maintenance->checkList, $maintenance->attendant) --}}
+    {{-- @dump($maintenance->repair, $maintenance, $maintenance->bike, $maintenance->checkList, $maintenance->attendant) --}}
 
 </x-filament-panels::page>

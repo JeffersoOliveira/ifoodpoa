@@ -18,10 +18,10 @@ class ListUsers extends ListRecords
         ];
     }
 
-    protected function getHeaderWidgets(): array
-    {
-        return [
-            UsersOverview::class,
-        ];
-    }
+    // protected function getHeaderWidgets(): array
+    // {
+    //     return [
+    //         UsersOverview::class,
+    //     ];
+    // }
 }

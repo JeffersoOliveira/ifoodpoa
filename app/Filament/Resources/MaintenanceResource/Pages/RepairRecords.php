@@ -63,7 +63,9 @@ class RepairRecords extends Page
                         'pinça_dianteiro' => 'Pinça Dian.',
                         'pinça_traseiro' => 'Pinça Tras.',
                         'conduite_dianteiro' => 'Conduite Dian.',
-                        'conduite_traseiro' => 'Conduite Tras.'
+                        'conduite_traseiro' => 'Conduite Tras.',
+                        'regulagem_traseiro' => 'Regulagem Freio Tras.',
+                        'regulagem_dianteiro' => 'Regulagem Freio Dian.'
                     ])
                     ->label('')
                     ->required()
@@ -212,7 +214,7 @@ class RepairRecords extends Page
                     ->columns(2),
 
 
-                //                Toggle::make('garfo')
+//                Toggle::make('garfo')
 //                    ->label('Garfo')
 //                    ->required()
 //                    ->reactive() // Reativo, assim a interface é atualizada ao mudar
@@ -225,12 +227,12 @@ class RepairRecords extends Page
 
 
 
-                Textarea::make('descricao')
-                    ->columnSpanFull()
-                    ->rows(7)
-                    ->extraAttributes([
-                        'class' => 'border border-gray-400',
-                    ]),
+                // Textarea::make('descricao')
+                //     ->columnSpanFull()
+                //     ->rows(7)
+                //     ->extraAttributes([
+                //         'class' => 'border border-gray-400',
+                //     ]),
 
             ]);
     }

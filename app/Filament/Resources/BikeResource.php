@@ -6,6 +6,7 @@ use App\Enums\BikeStatusEnum;
 use App\Enums\MaintenanceStatusEnum;
 use App\Filament\Resources\BikeResource\Pages;
 use App\Filament\Resources\BikeResource\RelationManagers;
+use App\Filament\Resources\BikeResource\RelationManagers\MaintenancesRelationManager;
 use App\Models\Bike;
 use App\Services\Traits\CanPermissionTrait;
 use Filament\Forms;
@@ -25,7 +26,11 @@ class BikeResource extends Resource
 
     protected static ?string $model = Bike::class;
     protected static ?string $slug = 'bikes';
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-rocket-launch';
+    // protected static ?string $navigationGroup = 'Configuraçoes';
+    protected static ?string $label = 'Bike';
+    protected static ?string $navigationLabel = 'Bikes';
+    protected static ?string $pluralLabel = 'Bikes';
 
     public static function form(Form $form): Form
     {
@@ -81,7 +86,7 @@ class BikeResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            MaintenancesRelationManager::class,
         ];
     }
 
