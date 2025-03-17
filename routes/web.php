@@ -8,3 +8,11 @@ Route::get('/', function () {
     $permission->handle();
     return view('welcome');
 });
+
+//TESTE PARA GERAR LOG
+// use Illuminate\Support\Facades\Log;
+
+// Route::get('/test-log', function () {
+//     Log::info('🚀 Testando logs do Laravel!');
+//     return 'Log gerado!';
+// });

@@ -26,7 +26,7 @@
                     ksort($checkList);
                 @endphp
                 @foreach ($checkList as $key => $value)
-                    @if ($key !== 'statusAnterior')
+                    @if ($key !== 'statusAnterior' and $key !== 'pecasFaltando')
                         <div class="flex flex-col items-center w-1/3 ml-4  md:ml-0 md:w-auto">
                             <strong>{{ ucfirst($key) }}:</strong>
                             @if ($value == 0)

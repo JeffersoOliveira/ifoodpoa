@@ -66,6 +66,10 @@ class PermissionGenerateService
             return "Visualização de {$entity}";
         }
 
+        if (str_contains($routName, "repairrecords")) {
+            return "Registro de {$entity}";
+        }
+
         // return $routName;
         return "No description";
     }

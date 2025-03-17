@@ -20,10 +20,12 @@ class Maintenance extends Model
         'description',
         'status',
         'type',
+        'started_at'
     ];
 
     protected $casts = [
         'status' => MaintenanceStatusEnum::class,
+        'started_at' => 'datetime:Y-m-d H:i:s',
         'created_at' => 'datetime:Y-m-d H:i:s',
         'updated_at' => 'datetime:Y-m-d H:i:s',
         //        'check_list' => 'json',

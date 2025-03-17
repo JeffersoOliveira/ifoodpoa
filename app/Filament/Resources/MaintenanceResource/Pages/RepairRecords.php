@@ -7,6 +7,7 @@ use App\Enums\MaintenanceStatusEnum;
 use App\Filament\Resources\MaintenanceResource;
 use App\Models\Maintenance;
 use App\Models\Repair;
+use App\Services\Traits\CanPermissionTrait;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
@@ -14,6 +15,7 @@ use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\Page;
 use Filament\Pages\Actions\Action;
+use Illuminate\Support\Facades\Gate;
 
 class RepairRecords extends Page
 {
@@ -29,6 +31,10 @@ class RepairRecords extends Page
 
     public function mount($maintenanceId): void
     {
+
+        if (!Gate::allows('filament.admin.resources.maintenance.repairrecords')) {
+            abort(403, 'Acesso negado.');
+        }
 
         // TODO: Revisar o preload
         $this->maintenance = Maintenance::findOrFail($maintenanceId);
@@ -214,7 +220,7 @@ class RepairRecords extends Page
                     ->columns(2),
 
 
-//                Toggle::make('garfo')
+                //                Toggle::make('garfo')
 //                    ->label('Garfo')
 //                    ->required()
 //                    ->reactive() // Reativo, assim a interface é atualizada ao mudar
@@ -247,7 +253,15 @@ class RepairRecords extends Page
         $this->maintenance->repair->update(['repaired' => $this->itemsRepaired]);
 
         // $bike = Bike::find($this->data['bike_id']);
-        dd($this->itemsRepaired, json_encode($this->itemsRepaired));
+        // dd($this->itemsRepaired, json_encode($this->itemsRepaired));
+
+        Notification::make()
+            ->title('Você finalizou a manutençao.')
+            // ->body('Você clicou no botão.')
+            ->success() // Define o tipo da notificação
+            ->send();
+
+        redirect()->route('filament.admin.resources.maintenance.index');
     }
 
     protected function getActions(): array

@@ -54,7 +54,7 @@ class UserResource extends Resource
                 Select::make('roles')
                     ->multiple()
                     ->preload()
-                    ->optionsLimit(3)
+                    ->optionsLimit(5)
                     ->relationship('roles', 'name'),
             ]);
     }

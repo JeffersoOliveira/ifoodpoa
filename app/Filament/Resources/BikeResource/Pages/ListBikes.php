@@ -4,6 +4,7 @@ namespace App\Filament\Resources\BikeResource\Pages;
 
 use App\Enums\BikeStatusEnum;
 use App\Filament\Resources\BikeResource;
+use App\Models\Bike;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Resources\Pages\ListRecords\Tab;
@@ -30,6 +31,8 @@ class ListBikes extends ListRecords
         foreach (BikeStatusEnum::cases() as $status) {
             $tabs[$status->value] = Tab::make()
                 ->label($status->getLabel())
+                ->badge(Bike::where('status', $status->value)->count())
+                ->badgeColor($status->getColor())
                 ->modifyQueryUsing(function (Builder $query) use ($status) {
                     $query->where('status', $status->value);
                 });

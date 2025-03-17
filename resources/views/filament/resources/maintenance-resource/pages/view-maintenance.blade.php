@@ -47,7 +47,7 @@
                     </thead>
                     <tbody>
                         @foreach ($maintenance->checkList->check_list as $key => $value)
-                            @if ($key !== 'statusAnterior')
+                            @if ($key !== 'statusAnterior' and $key != 'pecasFaltando')
                                 <tr class="hover:bg-gray-100 text-gray-900">
                                     <td class="px-4 py-2 border">{{ ucwords($key) }}</td>
                                     <td class="px-4 py-2 border">
@@ -96,7 +96,7 @@
                         @foreach ($maintenance->repair['repaired'] as $key => $values)
                             {{-- @dump($key, $values); --}}
 
-                            @if ($key != 'statusAnterior')
+                            @if ($key != 'statusAnterior' and $key != 'pecasFaltando')
                                 <tr class="hover:bg-gray-100 text-gray-900">
                                     <td class="px-4 py-2 border">{{ ucwords($key) }}</td>
                                     @if (is_array($values) && !empty($values))

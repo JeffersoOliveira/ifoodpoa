@@ -9,6 +9,7 @@ use App\Models\Bike;
 use App\Models\Maintenance;
 use App\Services\Traits\CanPermissionTrait;
 use Arr;
+use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Group;
@@ -28,6 +29,7 @@ use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -174,12 +176,18 @@ class MaintenanceResource extends Resource
     {
         return $table
             ->defaultSort('maintenance_date', 'desc')
+            ->paginationPageOptions([10, 25, 50])
             ->columns([
                 TextColumn::make('bike.patrimony')
                     ->numeric()
                     ->searchable(),
+                TextColumn::make('created_at')
+                    ->label('Criado em')
+                    ->sortable()
+                    ->toggleable()
+                    ->dateTime('d/m/Y  H:i'),
                 TextColumn::make('attendant.name')
-                    ->label('Atendente')
+                    ->label('Criado por')
                     ->numeric(),
                 TextColumn::make('maintenance_date')
                     ->label('Dia')
@@ -207,7 +215,14 @@ class MaintenanceResource extends Resource
                             fn($q) =>
                             $q->where('maintenance_date', $data['maintenance_date'])
                         )
-                    ),
+                    )
+                    ->indicateUsing(function (array $data): ?string {
+                        if (! $data['maintenance_date']) {
+                            return null;
+                        }
+                        //TODO: formatar da data
+                        return 'Agendado para: '. $data['maintenance_date'];
+                    }),
 
                 //
             ])

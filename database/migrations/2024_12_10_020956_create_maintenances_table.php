@@ -23,6 +23,7 @@ return new class extends Migration {
             $table->enum('status', ['pending', 'in_progress', 'completed'])->default('pending');
 
             $table->text('type');
+            $table->timestamp('started_at')->nullable();
             //            $table->json('check_list')->nullable();
 //            $table->json('repaired')->nullable();
 

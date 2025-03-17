@@ -67,7 +67,6 @@ class MaintenancesRelationManager extends RelationManager
                             TimePicker::make('maintenance_time')
                                 ->label('Horário')
                                 ->required()
-                                ->default("09:00")
                                 ->format('H:i')
                                 ->reactive()
                                 ->minutesStep(30)
